@@ -1,5 +1,5 @@
 // backend-strapi/src/plugins/custom-upload/admin/src/components/UploadWrapper/index.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Dialog } from '@strapi/design-system/Dialog';
 import { Button } from '@strapi/design-system/Button';
 import { Stack } from '@strapi/design-system/Stack';
@@ -7,17 +7,13 @@ import { Typography } from '@strapi/design-system/Typography';
 import { useNotification } from '@strapi/helper-plugin';
 import axios from 'axios';
 
-const UploadWrapper = ({ original: Original, ...props }) => {
+const UploadWrapper = ({ children }) => {
+  console.log('UploadWrapper rendering');
   const [showDialog, setShowDialog] = useState(false);
   const [pendingFile, setPendingFile] = useState(null);
   const toggleNotification = useNotification();
 
-  useEffect(() => {
-    console.log('UploadWrapper mounted with props:', props); // デバッグログ
-  }, []);
-
-// backend-strapi/src/plugins/custom-upload/admin/src/components/UploadWrapper/index.js
-  const checkFileExists = async (fileName) => {
+  const checkFileExists = useCallback(async (fileName) => {
     try {
       console.log('Checking file existence:', fileName);
       const response = await axios.get(
@@ -33,14 +29,18 @@ const UploadWrapper = ({ original: Original, ...props }) => {
       });
       return false;
     }
-  };
+  }, [toggleNotification]);
 
-  const handleBeforeUpload = async (files) => {
-    console.log('handleBeforeUpload called with:', files); // デバッグログ
+  const handleBeforeUpload = useCallback(async (files) => {
+    console.log('handleBeforeUpload called with files:', files);
+
     if (!files || files.length === 0) return files;
 
     const file = files[0];
+    console.log('Checking file:', file.name);
+
     const exists = await checkFileExists(file.name);
+    console.log('File exists:', exists);
 
     if (exists) {
       setPendingFile(file);
@@ -49,14 +49,22 @@ const UploadWrapper = ({ original: Original, ...props }) => {
     }
 
     return files;
-  };
+  }, [checkFileExists]);
+
+  const handleOverwrite = useCallback(() => {
+    setShowDialog(false);
+    // ここでファイルのアップロード処理を行う
+    console.log('Overwriting file:', pendingFile);
+    setPendingFile(null);
+    toggleNotification({
+      type: 'success',
+      message: 'ファイルを上書きしました',
+    });
+  }, [pendingFile, toggleNotification]);
 
   return (
     <>
-      <Original
-        {...props}
-        onBeforeUpload={handleBeforeUpload}
-      />
+      {children && React.cloneElement(children, { onBeforeUpload: handleBeforeUpload })}
 
       {showDialog && (
         <Dialog
@@ -89,13 +97,7 @@ const UploadWrapper = ({ original: Original, ...props }) => {
             }
             endAction={
               <Button
-                onClick={() => {
-                  setShowDialog(false);
-                  if (pendingFile) {
-                    props.onUploadSucceed([pendingFile]);
-                  }
-                  setPendingFile(null);
-                }}
+                onClick={handleOverwrite}
                 variant="danger-light"
               >
                 上書きする

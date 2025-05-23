@@ -1,6 +1,5 @@
-// backend-strapi/src/plugins/custom-upload/admin/src/pluginId.js
-const pluginPkg = require('../../package.json');
+import pluginPkg from '../../package.json';
 
-const pluginId = pluginPkg.name.replace(/^(@[^-,.][\w,-]+\/|strapi-)plugin-/i, '');
+const pluginId = pluginPkg.name;
 
-module.exports = pluginId;
+export default pluginId;

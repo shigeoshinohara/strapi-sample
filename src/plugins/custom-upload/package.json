@@ -1,16 +1,42 @@
 {
   "name": "custom-upload",
-  "version": "0.0.1",
-  "description": "Custom upload plugin for Strapi",
+  "version": "0.1.0",
+  "description": "A Strapi plugin to handle custom upload logic.",
+  "keywords": [
+    "strapi",
+    "plugin",
+    "upload",
+    "custom"
+  ],
+  "dependencies": {
+    "@strapi/design-system": "^1.0.0",
+    "@strapi/helper-plugin": "^4.0.0",
+    "@strapi/icons": "^4.0.0",
+    "axios": "^0.27.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "@strapi/strapi": ">=4.0.0"
+  },
+  "author": {
+    "name": "Your Name"
+  },
+  "maintainers": [
+    {
+      "name": "Your Name"
+    }
+  ],
+  "engines": {
+    "node": ">=14.19.1 <=21.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT",
   "strapi": {
     "name": "custom-upload",
-    "description": "Custom upload plugin with file existence check",
+    "displayName": "Custom Upload",
+    "description": "Handle custom upload logic",
     "kind": "plugin"
-  },
-  "dependencies": {
-    "@strapi/design-system": "^1.6.3",
-    "@strapi/helper-plugin": "^4.6.0",
-    "@strapi/icons": "^1.6.3",
-    "prop-types": "^15.7.2"
   }
 }
