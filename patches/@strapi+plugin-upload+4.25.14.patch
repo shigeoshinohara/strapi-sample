@@ -1,0 +1,30 @@
+diff --git a/node_modules/@strapi/plugin-upload/server/services/file.js b/node_modules/@strapi/plugin-upload/server/services/file.js
+index 21a4dba..37cb77f 100644
+--- a/node_modules/@strapi/plugin-upload/server/services/file.js
++++ b/node_modules/@strapi/plugin-upload/server/services/file.js
+@@ -31,6 +31,26 @@ const signFileUrls = async (file) => {
+
+   // Check file provider and if provider is private
+   if (file.provider !== providerConfig || !isPrivate) {
++    const {id} = file;
++    const strapiApiKey = process.env.BROWSER_API_KEY;
++    const baseUrl = `/api/filedownload/${id}?hash=${strapiApiKey}`;
++    // APIを呼び出す様に設定を変更する
++    file.url = baseUrl + '&type=url';
++    const formats = file.formats;
++    // 各サイズに応じた画像urlもAPIを呼び出す様に設定を変更する
++    if(formats && Object.keys(formats).indexOf('thumbnail') !== -1) {
++      file.formats.thumbnail.url = baseUrl + '&type=thumbnail';
++    }
++    if(formats && Object.keys(formats).indexOf('small') !== -1) {
++      file.formats.small.url = baseUrl + '&type=small';
++    }
++    if(formats && Object.keys(formats).indexOf('medium') !== -1) {
++      file.formats.medium.url = baseUrl + '&type=medium';
++    }
++    if(formats && Object.keys(formats).indexOf('large') !== -1) {
++      file.formats.large.url = baseUrl + '&type=large';
++    }
+     return file;
+   }
+

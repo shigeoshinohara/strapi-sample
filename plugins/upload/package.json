@@ -1,0 +1,7 @@
+{
+  "strapi": {
+    "name": "upload",
+    "description": "Custom upload plugin with file existence check",
+    "kind": "plugin"
+  }
+}

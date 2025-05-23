@@ -1,0 +1,15 @@
+{
+  "name": "custom-upload",
+  "version": "0.0.1",
+  "description": "Custom upload plugin for Strapi",
+  "strapi": {
+    "name": "custom-upload",
+    "description": "Custom upload plugin with file existence check",
+    "kind": "plugin"
+  },
+  "dependencies": {
+    "@strapi/design-system": "^1.6.3",
+    "@strapi/helper-plugin": "^4.6.0",
+    "@strapi/icons": "^1.6.3"
+  }
+}

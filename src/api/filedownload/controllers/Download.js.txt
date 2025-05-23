@@ -1,0 +1,17 @@
+const { createCoreController } = require('@strapi/strapi').factories;
+
+module.exports = createCoreController('api::download.download', ({ strapi }) => ({
+  async download(ctx) {
+    const { id } = ctx.params;
+    const file = await strapi.plugins['upload'].services.upload.findOne(id);
+
+    if (!file) {
+      return ctx.notFound('File not found');
+    }
+
+    const fileStream = await strapi.plugins['upload'].services.upload.getStream(file);
+    ctx.set('Content-disposition', `attachment; filename="${file.name}"`);
+    ctx.type = file.mime;
+    ctx.body = fileStream;
+  },
+}));

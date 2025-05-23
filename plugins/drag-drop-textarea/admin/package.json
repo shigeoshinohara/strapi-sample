@@ -1,0 +1,10 @@
+{
+  "name": "drag-drop-textarea",
+  "version": "1.0.0",
+  "strapi": {
+    "type": "plugin"
+  },
+  "dependencies": {
+    "react-beautiful-dnd": "^13.1.0"
+  }
+}
