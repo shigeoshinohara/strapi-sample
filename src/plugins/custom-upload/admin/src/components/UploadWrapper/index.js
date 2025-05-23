@@ -1,5 +1,5 @@
 // backend-strapi/src/plugins/custom-upload/admin/src/components/UploadWrapper/index.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog } from '@strapi/design-system/Dialog';
 import { Button } from '@strapi/design-system/Button';
 import { Stack } from '@strapi/design-system/Stack';
@@ -7,35 +7,40 @@ import { Typography } from '@strapi/design-system/Typography';
 import { useNotification } from '@strapi/helper-plugin';
 import axios from 'axios';
 
-const UploadWrapper = ({ Component, ...props }) => {
-  const toggleNotification = useNotification();
+const UploadWrapper = ({ original: Original, ...props }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [pendingFile, setPendingFile] = useState(null);
+  const toggleNotification = useNotification();
 
+  useEffect(() => {
+    console.log('UploadWrapper mounted with props:', props); // デバッグログ
+  }, []);
+
+// backend-strapi/src/plugins/custom-upload/admin/src/components/UploadWrapper/index.js
   const checkFileExists = async (fileName) => {
-    console.log("!!!!!!!!!!!!!!!!")
-
     try {
+      console.log('Checking file existence:', fileName);
       const response = await axios.get(
-        `/custom-upload/check-file?name=${encodeURIComponent(fileName)}`
+        `/admin/custom-upload/check-file?name=${encodeURIComponent(fileName)}`
       );
-      return response.data.exists;
+      console.log('API response:', response.data);
+      return response.data.data.exists;
     } catch (error) {
       console.error('File check failed:', error);
+      toggleNotification({
+        type: 'warning',
+        message: 'ファイルチェックに失敗しました',
+      });
       return false;
     }
   };
 
   const handleBeforeUpload = async (files) => {
-    console.log('handleBeforeUpload called with files:', files); // デバッグログ
-
+    console.log('handleBeforeUpload called with:', files); // デバッグログ
     if (!files || files.length === 0) return files;
 
     const file = files[0];
-    console.log('Checking file:', file.name); // デバッグログ
-
     const exists = await checkFileExists(file.name);
-    console.log('File exists:', exists); // デバッグログ
 
     if (exists) {
       setPendingFile(file);
@@ -43,13 +48,12 @@ const UploadWrapper = ({ Component, ...props }) => {
       return false;
     }
 
-    return props.onBeforeUpload ? props.onBeforeUpload(files) : files;
-
+    return files;
   };
 
   return (
     <>
-      <Component
+      <Original
         {...props}
         onBeforeUpload={handleBeforeUpload}
       />

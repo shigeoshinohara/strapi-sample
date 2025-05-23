@@ -1,5 +1,4 @@
 // backend-strapi/src/plugins/custom-upload/admin/src/index.js
-import { prefixPluginTranslations } from '@strapi/helper-plugin';
 import pluginId from './pluginId';
 import UploadWrapper from './components/UploadWrapper';
 
@@ -9,19 +8,19 @@ export default {
       id: pluginId,
       name: 'custom-upload',
       isReady: true,
+      load() {
+        const plugin = app.getPlugin('upload');
+        if (plugin) {
+          const MediaLib = plugin.apis['media-library'];
+          if (MediaLib) {
+            const original = MediaLib.components.Input;
+            MediaLib.components.Input = (props) => {
+              console.log('Custom upload wrapper mounted'); // デバッグログ
+              return <UploadWrapper original={original} {...props} />;
+            };
+          }
+        }
+      },
     });
-
-    // アップロードプラグインの拡張
-    const plugin = app.getPlugin('upload');
-    if (plugin) {
-      const originalComponent = plugin.apis?.components['media-library']?.components?.InputMedia;
-      if (originalComponent) {
-        plugin.apis.components['media-library'].components.InputMedia = (props) => {
-          return <UploadWrapper Component={originalComponent} {...props} />;
-        };
-      }
-    }
   },
-
-  bootstrap() {},
 };
