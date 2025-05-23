@@ -27,10 +27,15 @@ const UploadWrapper = ({ Component, ...props }) => {
   };
 
   const handleBeforeUpload = async (files) => {
+    console.log('handleBeforeUpload called with files:', files); // デバッグログ
+
     if (!files || files.length === 0) return files;
-    console.log("################################")
+
     const file = files[0];
+    console.log('Checking file:', file.name); // デバッグログ
+
     const exists = await checkFileExists(file.name);
+    console.log('File exists:', exists); // デバッグログ
 
     if (exists) {
       setPendingFile(file);
@@ -39,6 +44,7 @@ const UploadWrapper = ({ Component, ...props }) => {
     }
 
     return props.onBeforeUpload ? props.onBeforeUpload(files) : files;
+
   };
 
   return (

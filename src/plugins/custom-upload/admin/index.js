@@ -11,16 +11,15 @@ export default {
       isReady: true,
     });
 
+    // アップロードプラグインの拡張
     const plugin = app.getPlugin('upload');
     if (plugin) {
-      const original = plugin.apis.components['media-library'].components;
-      plugin.apis.components['media-library'].components = {
-        ...original,
-        MediaLibraryInput: {
-          ...original.MediaLibraryInput,
-          component: UploadWrapper,
-        },
-      };
+      const originalComponent = plugin.apis?.components['media-library']?.components?.InputMedia;
+      if (originalComponent) {
+        plugin.apis.components['media-library'].components.InputMedia = (props) => {
+          return <UploadWrapper Component={originalComponent} {...props} />;
+        };
+      }
     }
   },
 
