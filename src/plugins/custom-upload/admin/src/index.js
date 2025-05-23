@@ -1,3 +1,4 @@
+// src/plugins/custom-upload/admin/src/index.js
 import { prefixPluginTranslations } from '@strapi/helper-plugin';
 import pluginId from './pluginId';
 import UploadWrapper from './components/UploadWrapper';
@@ -20,4 +21,3 @@ export default {
 
   bootstrap() {},
 };
-
